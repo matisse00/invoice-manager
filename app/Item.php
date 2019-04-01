@@ -10,7 +10,7 @@ class Item extends Model
         'ordinalnumber', 'name', 'unit', 'amount', 'quantity', 'vat', 'netsum', 'grosssum',
     ];
 
-    public function users()
+    public function invoice()
     {
         return $this->belongsTo(Invoice::class);
     }

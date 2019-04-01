@@ -15,6 +15,7 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('company_id')->unsigned()->index();
             $table->char('invoice_number', 30);
             $table->date('invoice_date');
             $table->date('sell_date');
@@ -23,6 +24,9 @@ class CreateInvoicesTable extends Migration
             $table->char('payer_address');
             $table->char('payer_nip', 13);
             $table->timestamps();
+        });
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }
 
