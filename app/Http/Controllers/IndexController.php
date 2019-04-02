@@ -8,6 +8,7 @@ use App\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Validator;
 use PDF;
 
 class IndexController extends Controller
@@ -21,9 +22,9 @@ class IndexController extends Controller
     {
         $today = date('Y-m-d');
 
-        $ordered_number = Invoice::all()->count();
-        $ordered_date = date('m/Y');
-        $invoice_number = "$ordered_number/$ordered_date";
+        $invoice_ordered_number = Invoice::all()->count() + 1;
+        $invoice_ordered_date = date('m/Y');
+        $invoice_number = "$invoice_ordered_number/$invoice_ordered_date";
         return view('create_invoice', [
             'companies' => Company::all(),
             'invoice_number' => $invoice_number,
@@ -40,6 +41,7 @@ class IndexController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $company = $request->route('id');
 
         $items = [];
         foreach ($data as $key => $item) {
@@ -49,18 +51,31 @@ class IndexController extends Controller
                 $items[$item_id][$item_name] = $item;
             }
         }
-//        'invoice_number', 'invoice_date', 'sell_date', 'payment_date', 'payer_name', 'payer_address', 'payer_nip'
-//        $validatedData = $request->validate([
-//            'invoice_number' => 'required|unique:invoices,NULL,',
-//            'invoice_date' =>
-//            'sell_date'
-//            'payment_date'
-//            'payer_name'
-//            'payer_addresss'
-//            'payer_nio'
-//        ])
 
-//        $validator = Validator::make($request->all(),Post::$rules);
+
+        $validate_fields = [
+            'invoice_number' => 'required',
+            'invoice_date' => 'required|date_format:Y-m-d',
+            'sell_date' => 'required|date_format:Y-m-d',
+            'payment_date' => 'required|date_format:Y-m-d',
+            'payer_name' => 'required',
+            'payer_address' => 'required',
+            'payer_nip' => 'required|max:13',
+        ];
+        foreach ($items as $key => $item) {
+            $validate_fields['item_name' . $key] = 'required';
+            $validate_fields['item_unit' . $key] = 'required';
+            $validate_fields['item_amount' . $key] = 'required|integer';
+            $validate_fields['item_quantity' . $key] = 'required|integer';
+            $validate_fields['item_vat' . $key] = 'required|numeric|between:0,1.0';
+        };
+
+        $validator = Validator::make($request->all(), $validate_fields);
+
+
+        if ($validator->fails()) {
+            return redirect()->action('IndexController@create', ['id' => $company])->withErrors($validator);
+        }
 
         $invoice = new Invoice;
         $invoice->invoice_number = $request->invoice_number;
@@ -70,7 +85,7 @@ class IndexController extends Controller
         $invoice->payer_name = $request->payer_name;
         $invoice->payer_address = $request->payer_address;
         $invoice->payer_nip = $request->payer_nip;
-        $invoice->company()->associate($request->route('id'));
+        $invoice->company()->associate($company);
         $invoice->save();
 
         foreach ($items as $key => $item) {
@@ -92,7 +107,7 @@ class IndexController extends Controller
             $item_object->save();
         }
 
-        return redirect()->action('IndexController@index', ['id' => $invoice->company->id]);
+        return redirect()->action('IndexController@index', ['id' => $company]);
     }
 
     /**
@@ -101,7 +116,8 @@ class IndexController extends Controller
      * @param $company
      * @return \Illuminate\Http\Response
      */
-    public function index($company)
+    public
+    function index($company)
     {
 
         $companies = Company::all();
@@ -109,7 +125,8 @@ class IndexController extends Controller
         return view('index_page', ['companies' => $companies, 'invoices' => $invoices]);
     }
 
-    public function show($id, $invoice_id)
+    public
+    function show($id, $invoice_id)
     {
         $invoice = Invoice::with('items')->where('id', $invoice_id)->first();
         $net_sum = $invoice->netSum();
@@ -124,7 +141,8 @@ class IndexController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy($id)
+    public
+    function destroy($id)
     {
         $invoice = Invoice::where('id', $id)->first();
         $company = $invoice->company->id;
@@ -132,7 +150,8 @@ class IndexController extends Controller
         return redirect()->action('IndexController@index', ['id' => $company]);
     }
 
-    public function downloadPdf($id)
+    public
+    function downloadPdf($id)
     {
         $invoice = Invoice::with('items')->where('id', $id)->first();
         $net_sum = $invoice->netSum();

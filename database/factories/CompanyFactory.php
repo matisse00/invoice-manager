@@ -4,11 +4,11 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Company::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
+        'name' => $faker->word,
         'address' => $faker->streetAddress,
-        'nip' => $faker->randomDigit,
-        'regon' => $faker->randomDigit,
-        'type' => $faker->name,
+        'nip' => $faker->randomNumber(8),
+        'regon' => $faker->randomNumber(8),
+        'type' => $faker->word,
         'account_number' => $faker->bankAccountNumber
     ];
 });

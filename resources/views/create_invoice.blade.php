@@ -54,10 +54,18 @@
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
             </div>
+            @if ($errors->any())
+                @foreach($errors->all() as $message)
+                    <div class="alert alert-danger" role="alert">
+                        {{$message}}
+                    </div>
+                @endforeach
+            @endif
             <div class="item-container">
             </div>
             <button class="btn btn-primary" type="submit">Zapisz fakturę</button>
         </form>
+
 
     </div>
 </div>
