@@ -11,17 +11,23 @@
     <table class="table table-hover invoices">
         <thead>
         <tr>
-            <th scope="col">Number faktury</th>
+            <th scope="col">Numer faktury</th>
             <th scope="col">Data wystawienia</th>
             <th scope="col">Nazwa płatnika</th>
+            <th scope="col">Usuń fakturę</th>
         </tr>
         </thead>
         <tbody>
         @foreach ($invoices as $invoice)
-            <tr class="clickable-row invoice" data-content="[{{$invoice->id}}]">
+            <tr class="clickable-row invoice" data-content="[{{$invoice->id}}]" style="cursor:pointer">
                 <td>{{$invoice->invoice_number}}</td>
                 <td>{{$invoice->invoice_date}}</td>
                 <td>{{$invoice->payer_name}}</td>
+                <td>
+                    <a type="button" class="btn btn-danger" href="/invoice/{{$invoice->id}}/delete">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                </td>
             </tr>
         @endforeach
         </tbody>
@@ -39,7 +45,9 @@
         const invoice_id = $(e.currentTarget).data('content');
         $.ajax({
             type: 'GET',
-            url: window.location.pathname + '/' + invoice_id,
+            url: _.replace( //Remove '/' if occurs more than once next to each other
+                window.location.pathname + '/' + invoice_id, RegExp('\/{2,}'), '/'
+            ),
             dataType: 'json',
         }).done((data) => {
             $('.invoice-details').html(data.invoice);
