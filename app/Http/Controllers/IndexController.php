@@ -116,8 +116,7 @@ class IndexController extends Controller
      * @param $company
      * @return \Illuminate\Http\Response
      */
-    public
-    function index($company)
+    public function index($company)
     {
 
         $companies = Company::all();
@@ -125,8 +124,7 @@ class IndexController extends Controller
         return view('index_page', ['companies' => $companies, 'invoices' => $invoices]);
     }
 
-    public
-    function show($id, $invoice_id)
+    public function show($id, $invoice_id)
     {
         $invoice = Invoice::with('items')->where('id', $invoice_id)->first();
         $net_sum = $invoice->netSum();
@@ -141,8 +139,7 @@ class IndexController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public
-    function destroy($id)
+    public function destroy($id)
     {
         $invoice = Invoice::where('id', $id)->first();
         $company = $invoice->company->id;
@@ -150,8 +147,7 @@ class IndexController extends Controller
         return redirect()->action('IndexController@index', ['id' => $company]);
     }
 
-    public
-    function downloadPdf($id)
+    public function downloadPdf($id)
     {
         $invoice = Invoice::with('items')->where('id', $id)->first();
         $net_sum = $invoice->netSum();
