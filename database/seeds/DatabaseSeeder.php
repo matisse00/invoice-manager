@@ -1,5 +1,6 @@
 <?php
 
+use App\Company;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -11,17 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Company::class, 3)->create();
-        factory(App\Invoice::class, 30)->create();
-        factory(App\Item::class, 100)->create();
+        if (Company::all()->count() == 0) {
+            factory(App\Company::class, 3)->create();
+            factory(App\Invoice::class, 30)->create();
+            factory(App\Item::class, 100)->create();
 
-        $invoices = App\Invoice::all();
+            $invoices = App\Invoice::all();
 
-        foreach ($invoices as $invoice) {
+            foreach ($invoices as $invoice) {
 
-            foreach ($invoice->items()->get() as $key => $item) {
-                $item->ordinalnumber = $key + 1;
-                $item->save();
+                foreach ($invoice->items()->get() as $key => $item) {
+                    $item->ordinalnumber = $key + 1;
+                    $item->save();
+                }
             }
         }
 

@@ -13,7 +13,6 @@ while ! mysql -h db -P 3306 -u"root" -p"strong" -e "show databases;" > /dev/null
 done
 echo "Mysql started"
 cd /var/www
-php artisan migrate:fresh
-php artisan db:seed
+php artisan migrate --seed
 php artisan serve --host=0.0.0.0 --port=8181
 

@@ -2,8 +2,10 @@
 ## How to run
 
 ### Docker
-`docker-compose build`
-`docker-compose up`
+Building: `docker-compose build`
+Running: `docker-compose up`
+
+###### Remember to add volume if you want keep your DB safe. 
 
 ### Local
 1. Setup MySQL with .env file
@@ -18,6 +20,7 @@
 
 * Go to `localhost:port/` to see list of invoices, 
 if you'll click on it you will be able to see details or export invoice to PDF.
-* Go to `localhost/api/` 
-api/company={company}/invoices
-api/company={company}/invoices/{invoice}
+* Go to `localhost:port/api/` 
+You can find invoices by using
+api/company=_company_id_/invoices
+api/company=_company_id_/invoices/_invoice_id_

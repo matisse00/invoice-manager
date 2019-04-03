@@ -15,6 +15,7 @@ class InvoiceCollection extends Resource
     public function toArray($invoice)
     {
         return [
+            'id' => $this->id,
             'invoice_number' => $this->invoice_number,
             'invoice_date' => $this->invoice_date,
             'sell_date' => $this->invoice_date,
