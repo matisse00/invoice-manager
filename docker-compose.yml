@@ -3,10 +3,7 @@ services:
 
   #PHP Service
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: app
+    build: .
     restart: unless-stopped
     tty: true
     environment:
@@ -18,22 +15,8 @@ services:
     networks:
       - app-network
 
-#  #Nginx Service
-#  nginx:
-#    image: nginx:alpine
-#    container_name: nginx
-#    restart: unless-stopped
-#    tty: true
-#    ports:
-#      - "8001:80"
-#      - "443:443"
-#    networks:
-#      - app-network
-
-  #MySQL Service
   db:
-    image: mysql:5.7.22
-    container_name: db
+    image: mysql:5.7.25
     restart: unless-stopped
     tty: true
     ports:
@@ -46,7 +29,6 @@ services:
     networks:
       - app-network
 
-#Docker Networks
 networks:
   app-network:
     driver: bridge

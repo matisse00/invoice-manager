@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Invoice;
 use App\Item;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -118,9 +119,14 @@ class IndexController extends Controller
      */
     public function index($company)
     {
+        try {
+            $companies = Company::all();
+            $invoices = DB::table('invoices')->where('company_id', $company)->orderBy('invoice_date')->paginate(20);
 
-        $companies = Company::all();
-        $invoices = DB::table('invoices')->where('company_id', $company)->orderBy('invoice_date')->paginate(20);
+        } catch (QueryException $e) {
+            abort(404);
+        }
+
         return view('index_page', ['companies' => $companies, 'invoices' => $invoices]);
     }
 

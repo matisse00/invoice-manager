@@ -11,9 +11,13 @@
 |
 */
 
-$first_company = DB::table('companies')->first()->id;
+try {
+    $first_company = DB::table('companies')->first()->id;
+} catch (Exception $e) {
+    $first_company = '';
+}
 
-Route::redirect('/', '/company/'.$first_company);
+Route::redirect('/', '/company/' . $first_company);
 Route::get('/company/{id}/', 'IndexController@index');
 Route::get('/company/{id}/create/', 'IndexController@create');
 Route::get('/company/{id}/{invoice_id}/', 'IndexController@show');

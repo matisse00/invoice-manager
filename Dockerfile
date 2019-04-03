@@ -9,6 +9,7 @@ WORKDIR /var/www
 COPY . /var/www
 
 RUN chmod +x /var/www/run.sh
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN composer install
 RUN npm install
