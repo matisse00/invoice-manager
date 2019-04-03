@@ -2,7 +2,7 @@
 ## How to run
 
 ### Docker
-Building: `docker-compose build`
+Building: `docker-compose build`  
 Running: `docker-compose up`
 
 ###### Remember to add volume if you want keep your DB safe. 
@@ -21,6 +21,6 @@ Running: `docker-compose up`
 * Go to `localhost:port/` to see list of invoices, 
 if you'll click on it you will be able to see details or export invoice to PDF.
 * Go to `localhost:port/api/` 
-You can find invoices by using
-api/company=_company_id_/invoices
+You can find invoices by using  
+api/company=_company_id_/invoices  
 api/company=_company_id_/invoices/_invoice_id_
